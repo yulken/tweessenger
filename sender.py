@@ -13,5 +13,17 @@ class Sender:
 			'chat_id': self.chat_id,
 			'text': message
 		}
-		r = requests.get(url=url, params=data)
-		print(r.status_code)
+		try:
+			r = requests.get(url=url, params=data)
+			if r.status_code == 400:
+				raise self.APIErrorException()
+
+		except self.APIErrorException:
+			print(f"An error has ocurred: {r.status_code}")
+			print(r.text)
+
+		except requests.exceptions.ConnectionError:
+			print("404 - Page Not Found")
+
+	class APIErrorException(Exception):
+		pass
