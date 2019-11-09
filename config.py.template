@@ -1,0 +1,4 @@
+# This is a example of a configuration file
+
+TOKEN = 'Your token here'
+CHAT_ID = 'Your chat Id here'
