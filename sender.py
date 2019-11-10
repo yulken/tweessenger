@@ -11,7 +11,8 @@ class Sender:
 		url = f'https://api.telegram.org/bot{self.token}/sendMessage'
 		data = {
 			'chat_id': self.chat_id,
-			'text': message
+			'text': message,
+			'parse_mode': 'html'
 		}
 		try:
 			r = requests.get(url=url, params=data)
