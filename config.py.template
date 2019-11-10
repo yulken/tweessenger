@@ -1,4 +1,11 @@
 # This is a example of a configuration file
 
-API_TOKEN = 'Your token here'
-API_CHAT_ID = 'Your chat Id here'
+# Telegram keys
+TELEGRAM_API_TOKEN = ''
+TELEGRAM_API_CHAT_ID = ''
+
+# Twitter keys
+TWITTER_API_KEY = ''
+TWITTER_API_KEY_SECRET = ''
+TWITTER_API_TOKEN = ''
+TWITTER_API_TOKEN_SECRET = ''
