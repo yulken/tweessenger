@@ -16,6 +16,7 @@ class TwitterMiner:
 			auth,
 			parser=tweepy.parsers.JSONParser()
 		)
+		self.msg_list = []
 
 	@staticmethod
 	def get_last_tweet_id(target_id, path):
@@ -46,7 +47,20 @@ class TwitterMiner:
 		)
 		return tl[0]['id']
 
-	def search_for(self, target_id, last_tweet_id, keywords):
+	@staticmethod
+	def build_message(tweet):
+		msg = f'<b>Message from {tweet["user"]["name"]}</b>:\n'
+		msg += f'{tweet["full_text"]}\n'
+		msg += f'https://twitter.com/user/status/{tweet["id"]}'
+		return msg
+
+	def search_for(self, keywords, tweet):
+		for word in keywords:
+			if re.search(word, tweet['full_text'], re.IGNORECASE):
+				self.msg_list.append(TwitterMiner.build_message(tweet))
+		pass
+
+	def get_new_tweets(self, target_id, last_tweet_id, keywords):
 		if last_tweet_id is None:
 			tl = self.api.user_timeline(
 				id=target_id,
@@ -58,14 +72,13 @@ class TwitterMiner:
 				tweet_mode="extended",
 				since_id=last_tweet_id
 			)
-		msg_list = []
 		for tweet in tl:
-			msg = ''
-			for word in keywords:
-				if re.search(word, tweet['full_text'], re.IGNORECASE):
-					msg += f'<b>Message from {tweet["user"]["name"]}</b>:\n'
-					msg += f'{tweet["full_text"]}\n'
-					msg += f'https://twitter.com/user/status/{tweet["id"]}'
-					msg_list.append(msg)
-		return msg_list
+			self.search_for(keywords, tweet)
+			if tweet['in_reply_to_status_id'] is not None:
+				status = self.api.get_status(
+					id=tweet['in_reply_to_status_id'],
+					tweet_mode="extended"
+				)
+				self.search_for(keywords, status)
+		return self.msg_list
 
