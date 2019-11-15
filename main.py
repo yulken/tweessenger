@@ -8,15 +8,20 @@ ids = {
 }
 
 
+def get_time(status):
+	time = datetime.now()
+	print(f'{time.strftime("%Y/%m/%d_%H:%M:%S")} - {status}')
+
+
 def get_supervia_status():
-	keywords = {
+	keywords = [
 		'Belford Roxo',
-		'#BelfordRoxo',
+		'BelfordRoxo',
 		'Japeri'
 
-	}
+	]
 	last_tweet = TwitterMiner.get_last_tweet_id(ids['SUPERVIA_TWITTER'], path)
-	msg_list = tm.search_for(ids['SUPERVIA_TWITTER'], last_tweet, keywords)
+	msg_list = tm.get_new_tweets(ids['SUPERVIA_TWITTER'], last_tweet, keywords)
 	if msg_list:
 		for msg in msg_list:
 			sender.send_message(msg)
@@ -25,8 +30,7 @@ def get_supervia_status():
 
 
 if __name__ == '__main__':
-	ts1 = datetime.now()
-	print(f'{ts1.strftime("%Y/%m/%d_%H:%M:%S")} - Starting')
+	get_time('Starting')
 	tm = TwitterMiner(
 		key=cfg.TWITTER_API_KEY, key_secret=cfg.TWITTER_API_KEY_SECRET,
 		token=cfg.TWITTER_API_TOKEN, token_secret=cfg.TWITTER_API_TOKEN_SECRET
@@ -34,5 +38,5 @@ if __name__ == '__main__':
 	sender = Sender(cfg.TELEGRAM_API_TOKEN, cfg.TELEGRAM_API_CHAT_ID)
 	path = 'last-id.log'
 	get_supervia_status()
-	ts2 = datetime.now()
-	print(f'{ts2.strftime("%Y/%m/%d_%H:%M:%S")} - Done')
+	get_time('Done')
+
