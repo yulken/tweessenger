@@ -8,12 +8,17 @@ ids = {
 
 
 def get_supervia_status():
-	keyword = 'Belford Roxo'
-	last_tweet = TwitterMiner.get_last_tweet_id(ids['SUPERVIA_TWITTER'], path)
-	msg_list = tm.search_for(ids['SUPERVIA_TWITTER'], last_tweet, keyword)
+	keywords = {
+		'Belford Roxo',
+		'#BelfordRoxo',
+		'Japeri'
 
-	for msg in msg_list:
-		sender.send_message(msg)
+	}
+	last_tweet = TwitterMiner.get_last_tweet_id(ids['SUPERVIA_TWITTER'], path)
+	msg_list = tm.search_for(ids['SUPERVIA_TWITTER'], last_tweet, keywords)
+	if msg_list:
+		for msg in msg_list:
+			sender.send_message(msg)
 
 	TwitterMiner.update_last_tweet_id(ids['SUPERVIA_TWITTER'], tm, path)
 

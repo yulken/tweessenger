@@ -46,11 +46,11 @@ class TwitterMiner:
 		)
 		return tl[0]['id']
 
-	def search_for(self, target_id, last_tweet_id, keyword):
+	def search_for(self, target_id, last_tweet_id, keywords):
 		if last_tweet_id is None:
 			tl = self.api.user_timeline(
 				id=target_id,
-				tweet_mode="extended",
+				tweet_mode="extended"
 			)
 		else:
 			tl = self.api.user_timeline(
@@ -61,10 +61,11 @@ class TwitterMiner:
 		msg_list = []
 		for tweet in tl:
 			msg = ''
-			if re.search(keyword, tweet['full_text'], re.IGNORECASE):
-				msg += f'<b>Message from {tweet["user"]["name"]}</b>:\n'
-				msg += f'{tweet["full_text"]}\n'
-				msg += f'https://twitter.com/user/status/{tweet["id"]}'
-				msg_list.append(msg)
+			for word in keywords:
+				if re.search(word, tweet['full_text'], re.IGNORECASE):
+					msg += f'<b>Message from {tweet["user"]["name"]}</b>:\n'
+					msg += f'{tweet["full_text"]}\n'
+					msg += f'https://twitter.com/user/status/{tweet["id"]}'
+					msg_list.append(msg)
 		return msg_list
 
