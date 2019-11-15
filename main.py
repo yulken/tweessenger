@@ -16,17 +16,15 @@ def get_time(status):
 def get_supervia_status():
 	keywords = [
 		'Belford Roxo',
-		'BelfordRoxo',
-		'Japeri'
-
+		'BelfordRoxo'
 	]
-	last_tweet = TwitterMiner.get_last_tweet_id(ids['SUPERVIA_TWITTER'], path)
-	msg_list = tm.get_new_tweets(ids['SUPERVIA_TWITTER'], last_tweet, keywords)
+	logged_id = TwitterMiner.get_last_tweet_id(ids['SUPERVIA_TWITTER'], path)
+	msg_list = tm.get_new_tweets(ids['SUPERVIA_TWITTER'], logged_id, keywords)
 	if msg_list:
 		for msg in msg_list:
 			sender.send_message(msg)
 
-	TwitterMiner.update_last_tweet_id(ids['SUPERVIA_TWITTER'], tm, path)
+	TwitterMiner.update_last_tweet_id(ids['SUPERVIA_TWITTER'], logged_id, tm, path)
 
 
 if __name__ == '__main__':
