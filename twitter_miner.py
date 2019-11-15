@@ -32,9 +32,9 @@ class TwitterMiner:
 			print("File not found")
 
 	@staticmethod
-	def update_last_tweet_id(target_id, twitter_miner, path):
+	def update_last_tweet_id(target_id,logged_id, twitter_miner, path):
 		last_tweet = twitter_miner.get_last_remote_tweet_id(target_id)
-		if last_tweet != TwitterMiner.get_last_tweet_id(target_id, path):
+		if last_tweet != logged_id:
 			f = open(path, 'a+')
 			f.write(f'{target_id};{last_tweet}\n')
 			f.close()
@@ -54,11 +54,13 @@ class TwitterMiner:
 		msg += f'https://twitter.com/user/status/{tweet["id"]}'
 		return msg
 
-	def search_for(self, keywords, tweet):
+	def search_for(self, keywords, tweet, tweet_type):
 		for word in keywords:
 			if re.search(word, tweet['full_text'], re.IGNORECASE):
-				self.msg_list.append(TwitterMiner.build_message(tweet))
-		pass
+				if tweet_type == 'mention':
+					return tweet
+				else:
+					self.msg_list.append(TwitterMiner.build_message(tweet))
 
 	def get_new_tweets(self, target_id, last_tweet_id, keywords):
 		if last_tweet_id is None:
@@ -73,12 +75,13 @@ class TwitterMiner:
 				since_id=last_tweet_id
 			)
 		for tweet in tl:
-			self.search_for(keywords, tweet)
+			self.search_for(keywords, tweet, 'status')
 			if tweet['in_reply_to_status_id'] is not None:
-				status = self.api.get_status(
+				mention = self.api.get_status(
 					id=tweet['in_reply_to_status_id'],
 					tweet_mode="extended"
 				)
-				self.search_for(keywords, status)
+				if self.search_for(keywords, mention, 'mention'):
+					self.msg_list.append(TwitterMiner.build_message(tweet))
 		return self.msg_list
 
