@@ -36,5 +36,5 @@ if __name__ == '__main__':
 	sender = Sender(cfg.TELEGRAM_API_TOKEN, cfg.TELEGRAM_API_CHAT_ID)
 	log_file = 'last-id.log'
 	path = '/set/your/path/here' + log_file
-	get_supervia_status(log_file)
+	get_supervia_status(path)
 	get_time('Done')
